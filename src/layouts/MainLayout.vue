@@ -5,10 +5,8 @@
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="text-weight-bold">
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          Twitter
+          <span class="gt-sm">Twitter</span>
+          <i class="drawer-twitter-icon fab fa-twitter q-pa-md lt-md absolute-center"></i>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -59,7 +57,9 @@
         <q-item class="q-pa-md">
           <q-item-section>
             <q-item-label overline class="text-grey">Education</q-item-label>
-            <q-item-label class="text-weight-bold">Something good happened today !</q-item-label>
+            <q-item-label class="text-weight-bold"
+              >Something good happened today !</q-item-label
+            >
             <q-item-label caption
               >Secondary line text. Lorem ipsum dolor sit amet, consectetur
               adipiscit elit.</q-item-label
@@ -73,7 +73,9 @@
         <q-item class="q-pa-md">
           <q-item-section>
             <q-item-label overline class="text-grey">Education</q-item-label>
-            <q-item-label class="text-weight-bold">Something good happened today !</q-item-label>
+            <q-item-label class="text-weight-bold"
+              >Something good happened today !</q-item-label
+            >
             <q-item-label caption
               >Secondary line text. Lorem ipsum dolor sit amet, consectetur
               adipiscit elit.</q-item-label
@@ -87,7 +89,9 @@
         <q-item class="q-pa-md">
           <q-item-section>
             <q-item-label overline class="text-grey">Education</q-item-label>
-            <q-item-label class="text-weight-bold">Something good happened today !</q-item-label>
+            <q-item-label class="text-weight-bold"
+              >Something good happened today !</q-item-label
+            >
             <q-item-label caption
               >Secondary line text. Lorem ipsum dolor sit amet, consectetur
               adipiscit elit.</q-item-label
