@@ -5,8 +5,17 @@
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title class="text-weight-bold">
-          <span class="gt-sm">{{$route.name}}</span>
-          <i class="drawer-twitter-icon fab fa-twitter q-pa-md lt-md absolute-center"></i>
+          <span class="gt-sm">{{ $route.name }}</span>
+          <i
+            class="
+              drawer-twitter-icon
+              fab
+              fa-twitter
+              q-pa-md
+              lt-md
+              absolute-center
+            "
+          ></i>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -106,7 +115,9 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </q-page-container>
   </q-layout>
 </template>
