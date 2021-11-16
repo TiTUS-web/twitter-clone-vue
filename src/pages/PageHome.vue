@@ -43,11 +43,7 @@
           enter-active-class="animated fadeIn slowed"
           leave-active-class="animated fadeOut slowed"
         >
-          <q-item
-            v-for="tweet in tweets"
-            :key="tweet.date"
-            class="tweet q-py-md"
-          >
+          <q-item v-for="tweet in tweets" :key="tweet.id" class="tweet q-py-md">
             <q-item-section avatar top>
               <q-avatar size="xl">
                 <img
@@ -83,7 +79,14 @@
                   size="sm"
                   icon="fas fa-retweet"
                 />
-                <q-btn flat round color="grey" size="sm" icon="far fa-heart" />
+                <q-btn
+                  flat
+                  round
+                  size="sm"
+                  @click="toggleLiked(tweet)"
+                  :icon="tweet.liked ? 'fas fa-heart' : 'far fa-heart'"
+                  :color="tweet.liked ? 'pink' : 'grey'"
+                />
                 <q-btn
                   flat
                   round
@@ -104,7 +107,15 @@
 <script>
 import { formatDistance } from "date-fns";
 import db from "src/boot/firebase";
-import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  addDoc,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 export default {
   name: "PageHome",
@@ -113,14 +124,18 @@ export default {
       newTweetContent: "",
       tweets: [
         // {
+        //   id: "ID1",
         //   content:
         //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illo eligendi suscipit ad sunt veniam eius recusandae corporis veritatis. Est, eligendi.",
         //   date: 1636937397126,
+        //   liked: false,
         // },
         // {
+        //   id: "ID2",
         //   content:
         //     "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illo eligendi suscipit ad sunt veniam eius recusandae corporis veritatis. Est, eligendi.",
         //   date: 1636937470223,
+        //   liked: true,
         // },
       ],
     };
@@ -129,19 +144,28 @@ export default {
     relativeDate(value) {
       return formatDistance(value, new Date());
     },
-    deleteTweet(tweet) {
-      let dateToDelete = tweet.date;
-      let index = this.tweets.findIndex((tweet) => tweet.date === dateToDelete);
-      this.tweets.splice(index, 1);
+    async deleteTweet(tweet) {
+      await deleteDoc(doc(db, "tweets", tweet.id));
     },
-    addNewTweet() {
+    async addNewTweet() {
       let newTweet = {
         content: this.newTweetContent,
-        date: new Date(),
+        date: Date.now(),
+        liked: false,
       };
 
-      this.tweets.unshift(newTweet);
+      // this.tweets.unshift(newTweet);
+      const docRef = await addDoc(collection(db, "tweets"), newTweet);
+      console.log("Document written with ID: ", docRef.id);
+
       this.newTweetContent = "";
+    },
+    async toggleLiked(tweet) {
+      const toggleLikedRef = doc(db, "tweets", tweet.id);
+
+      await updateDoc(toggleLikedRef, {
+        liked: !tweet.liked,
+      });
     },
   },
   mounted() {
@@ -149,15 +173,24 @@ export default {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let tweetChange = change.doc.data();
+        tweetChange.id = change.doc.id;
         if (change.type === "added") {
           console.log("New tweet: ", tweetChange);
           this.tweets.unshift(tweetChange);
         }
         if (change.type === "modified") {
           console.log("Modified tweet: ", tweetChange);
+          let index = this.tweets.findIndex(
+            (tweet) => tweet.id === tweetChange.id
+          );
+          Object.assign(this.tweets[index], tweetChange);
         }
         if (change.type === "removed") {
           console.log("Removed tweet: ", tweetChange);
+          let index = this.tweets.findIndex(
+            (tweet) => tweet.id === tweetChange.id
+          );
+          this.tweets.splice(index, 1);
         }
       });
     });
